@@ -7,14 +7,15 @@ const STORE = {
     {name: 'milk', checked: true},
     {name: 'bread', checked: false}
   ],
-  itemsChecked: false
+  itemsChecked: false,
+  searchItem: undefined,
 };
 
 
 function generateItemElement(item, itemIndex, template) {
   return `
     <li class="js-item-index-element" data-item-index="${itemIndex}">
-      <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}</span>
+      <span contenteditable="true" class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}</span>
       <div class="shopping-item-controls">
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
@@ -41,13 +42,15 @@ function renderShoppingList() {
   console.log('`renderShoppingList` ran');
 
   let itemsToShow = [];
-  if(STORE.itemsChecked = false){
+  if(STORE.itemsChecked === false){
     itemsToShow = STORE.items;
   }
   else{
     itemsToShow = STORE.items.filter(item => !item.checked);
   }
-  
+  if(STORE.searchItem !== undefined){
+    itemsToShow = STORE.items.filter(item => item.name.includes(STORE.searchItem));
+  }
   const shoppingListItemsString = generateShoppingItemsString(itemsToShow);
 
   // insert that HTML into the DOM
@@ -65,7 +68,7 @@ function handleNewItemSubmit() {
     event.preventDefault();
     console.log('`handleNewItemSubmit` ran');
     const newItemName = $('.js-shopping-list-entry').val();
-    $('.js-shopping-list-entry').val('');
+    //$('.js-shopping-list-entry').val('');
     addItemToShoppingList(newItemName);
     renderShoppingList();
   });
@@ -124,9 +127,11 @@ function handleCheckedItemsSwitch(){
   $('#js-show-only-unchecked-items').on('change', function(){
     if ( $('#js-show-only-unchecked-items')[0].checked ) { 
       STORE.itemsChecked = true;
+      
       renderShoppingList();
     } else {
       STORE.itemsChecked = false;
+
       renderShoppingList();
     }
   });
@@ -137,6 +142,21 @@ handleItemHide
   });
 */
 } 
+function handleSearchBar(){
+  // get the value of the input field so we can filter the results
+  $('.search-area').submit(function(event) {
+    event.preventDefault();
+    console.log('`handleSearchBar` ran');
+    let inputItem = $('#search-display-filter').val();
+    STORE.searchItem = inputItem;
+  
+    renderShoppingList();
+    // deprecated: itemsToShow = STORE.items.filter(item => item.name.contains(toFilter));
+    // code borrowed from: $(list).find('a:contains(' + filter + ')').parent().slideDown();
+    // deprecated: const shoppingListItemsString = generateShoppingItemsString(itemsToShow);
+    //deprecated: $('.js-shopping-list').html(shoppingListItemsString);
+  });
+}
 
 
 
@@ -151,6 +171,7 @@ function handleShoppingList() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleCheckedItemsSwitch();
+  handleSearchBar();
 }
 
 // when the page loads, call `handleShoppingList`

@@ -15,9 +15,13 @@
             <input type="text" name="shopping-list-entry" class="js-shopping-list-entry" placeholder="e.g., broccoli">
             <button type="submit">Add item</button>
             <label class="switch">Show Unchecked Items Only
-                <input type="checkbox" class= "js-show-only-unchecked-items">
+                <input type="checkbox" id="js-show-only-unchecked-items">
               </label>
         </form>
+        <form class="search-area" action="action_page.php">
+            <input type="text" placeholder="Search.." name="search" id="search-display-filter">
+            <button type="submit" id="sub-search">Search</button>
+          </form>
         <ul class="shopping-list js-shopping-list">
         </ul>
     </div>
